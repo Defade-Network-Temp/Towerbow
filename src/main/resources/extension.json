@@ -1,0 +1,5 @@
+{
+  "entrypoint": "net.defade.towerbow.Main",
+  "name": "Towerbow",
+  "version": "1.0.0"
+}
