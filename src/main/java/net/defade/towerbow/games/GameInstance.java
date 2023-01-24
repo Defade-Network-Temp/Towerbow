@@ -2,16 +2,13 @@ package net.defade.towerbow.games;
 
 import net.defade.towerbow.utils.Team;
 import net.defade.towerbow.utils.Utils;
-import net.defade.towerbow.games.eventNodes.GameDisplayer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.tag.Tag;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,6 +18,7 @@ public class GameInstance extends InstanceContainer {
     private final GameDisplayer displayer;
 
     private final GameEvents events;
+    private final GamePvpHandler pvpHandler;
     private GameStatus gameStatus = GameStatus.CREATING;
     private final Map<Player, Team> players = new HashMap<>();
     private final Map<Point, Long> blocks = new HashMap<>();
@@ -31,6 +29,7 @@ public class GameInstance extends InstanceContainer {
         events = new GameEvents(this, MinecraftServer.getGlobalEventHandler());
         timeline = new GameTimeline(this);
         this.displayer = new GameDisplayer(this);
+        pvpHandler = new GamePvpHandler(this);
     }
 
     public boolean containsTP(Player player) {

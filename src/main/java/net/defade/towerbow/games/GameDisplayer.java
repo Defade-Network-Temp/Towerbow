@@ -1,4 +1,4 @@
-package net.defade.towerbow.games.eventNodes;
+package net.defade.towerbow.games;
 
 import net.defade.towerbow.utils.Team;
 import net.defade.towerbow.utils.Utils;
