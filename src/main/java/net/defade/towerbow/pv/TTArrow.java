@@ -6,6 +6,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
+import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.metadata.ProjectileMeta;
 import net.minestom.server.entity.metadata.arrow.AbstractArrowMeta;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TTArrow extends Entity {
@@ -29,7 +31,7 @@ public class TTArrow extends Entity {
     protected int pickupDelay;
     protected int stuckTime;
     protected int ticks;
-    private int knockback;
+    private final int knockback = 2;
 
     private final Entity shooter;
     private final boolean hitAnticipation;
@@ -79,6 +81,7 @@ public class TTArrow extends Entity {
 
     // Called when the arrow is stuck in a block, in this case the arrow is deleted
     public void onStuck() {
+
         remove();
     }
 
@@ -95,7 +98,13 @@ public class TTArrow extends Entity {
      * Probably you want to add some random velocity to arrows in such case.
      */
     public void onUnstuck() {
-        remove();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        setVelocity(getPosition().direction().mul(
+                random.nextFloat() * 0.2,
+                random.nextFloat() * 0.2,
+                random.nextFloat() * 0.2
+        ).mul(MinecraftServer.TICK_PER_SECOND));
+        ticks = 0;
     }
 
     public void onHit(Entity entity) {
@@ -290,10 +299,15 @@ public class TTArrow extends Entity {
                 if (shouldTeleport) teleport(pos);
                 return State.StuckInBlock;
             }
+
+
             Chunk currentChunk = instance.getChunkAt(pos);
             if (currentChunk != chunk) {
                 chunk = currentChunk;
-                entities = new HashSet<>(instance.getChunkEntities(chunk));
+                entities = instance.getChunkEntities(chunk)
+                        .stream()
+                        .filter(LivingEntity.class::isInstance)
+                        .collect(Collectors.toSet());
             }
 
             final Pos finalPos = pos;

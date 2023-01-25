@@ -41,13 +41,13 @@ public class GamePvpHandler {
         events.getPlayerInstanceNode().addListener(EventListener.builder(ItemUpdateStateEvent.class).handler(event -> {
             Player player = event.getPlayer();
             ItemStack stack = event.getItemStack();
-
-            if (!instance.getGameStatus().isPlaying()) return;
+            System.out.println("Event called");
+            // TODO if (!instance.getGameStatus().isPlaying()) return;
 
             long useDuration = System.currentTimeMillis() - player.getTag(ITEM_USE_START_TIME);
             double power = getBowPower(useDuration);
             if (power < 0.1) return;
-
+            System.out.println("Enough power");
             TTArrow arrow = new TTArrow(player, false);
 
             Pos position = player.getPosition().add(0D, player.getEyeHeight(), 0D);
