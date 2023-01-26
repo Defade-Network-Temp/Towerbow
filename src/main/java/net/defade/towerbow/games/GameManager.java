@@ -3,18 +3,22 @@ package net.defade.towerbow.games;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerLoginEvent;
+import net.minestom.server.utils.NamespaceID;
 import net.minestom.server.world.DimensionType;
+import net.minestom.server.world.DimensionTypeManager;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.HashSet;
 import java.util.Set;
 
 public class GameManager {
     private static final int MAX_INSTANCE_PER_SERVER = 15;
-    public static final DimensionType DEFAULT_DIMENSION_TYPE = DimensionType.OVERWORLD;
+    public static final NamespaceID DIM_NAME_SPACE_ID = NamespaceID.from("tower_dimension");
+    private final DimensionTypeManager towerDimensionManager;
     private final Set<GameInstance> gameInstances = new HashSet<>();
 
     public GameManager() {
+        towerDimensionManager = new DimensionTypeManager();
+        towerDimensionManager.addDimension(DimensionType.builder(DIM_NAME_SPACE_ID).ambientLight(1f).build());
         updateGameInstances();
         MinecraftServer.getGlobalEventHandler().addListener(PlayerLoginEvent.class, playerLoginEvent -> {
             Player player = playerLoginEvent.getPlayer();
@@ -56,5 +60,9 @@ public class GameManager {
             if (gameInstance.canAcceptPlayers()) return gameInstance;
         }
         return null;
+    }
+
+    public DimensionTypeManager getTowerDimensionManager() {
+        return towerDimensionManager;
     }
 }

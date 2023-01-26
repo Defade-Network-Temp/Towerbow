@@ -6,9 +6,8 @@ import net.minestom.server.instance.block.Block;
 public class TowerbowMapGenerator  {
 
     public static void generate(GameInstance gameInstance, int sizeOfHalfASide) {
-        final int y = -10;
-        // Noise used for the height
 
+        final int y = -10;
         for (int x = -sizeOfHalfASide;x < sizeOfHalfASide; ++x) {
             for (int z = -sizeOfHalfASide;z < sizeOfHalfASide; ++z) {
                 gameInstance.setBlock(x, y, z, Block.GRAY_STAINED_GLASS);

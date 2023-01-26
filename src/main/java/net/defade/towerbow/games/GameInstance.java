@@ -7,6 +7,7 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.tag.Tag;
+import net.minestom.server.world.DimensionType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class GameInstance extends InstanceContainer {
     private final Map<Point, Long> blocks = new HashMap<>();
 
     public GameInstance(GameManager gameManager) {
-        super(UUID.randomUUID(), GameManager.DEFAULT_DIMENSION_TYPE);
+        super(UUID.randomUUID(), DimensionType.OVERWORLD);
         this.gameManager = gameManager;
         events = new GameEvents(this, MinecraftServer.getGlobalEventHandler());
         timeline = new GameTimeline(this);

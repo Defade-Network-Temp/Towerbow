@@ -18,11 +18,16 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.MathUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+//Most of the code from this class is inspired by MinestomPVP.
+//        MinestomPVP repo : https://github.com/TogAr2/MinestomPvP
 
 public class TTArrow extends Entity {
     private static final double ARROW_BASE_DAMAGE = 2.0;
@@ -37,10 +42,10 @@ public class TTArrow extends Entity {
     private final boolean hitAnticipation;
     protected boolean noClip;
 
-    public TTArrow(Entity shooter, boolean hitAnticipation) {
+    public TTArrow(Entity shooter) {
         super(EntityType.ARROW);
         this.shooter = shooter;
-        this.hitAnticipation = hitAnticipation;
+        this.hitAnticipation = false;
         setup();
     }
 
@@ -81,8 +86,7 @@ public class TTArrow extends Entity {
 
     // Called when the arrow is stuck in a block, in this case the arrow is deleted
     public void onStuck() {
-
-        remove();
+        if (stuckTime > 20*60) remove();
     }
 
     public void setCritical(boolean critical) {

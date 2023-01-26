@@ -48,7 +48,7 @@ public class GamePvpHandler {
             double power = getBowPower(useDuration);
             if (power < 0.1) return;
             System.out.println("Enough power");
-            TTArrow arrow = new TTArrow(player, false);
+            TTArrow arrow = new TTArrow(player);
 
             Pos position = player.getPosition().add(0D, player.getEyeHeight(), 0D);
             arrow.setInstance(Objects.requireNonNull(player.getInstance()),
@@ -57,7 +57,7 @@ public class GamePvpHandler {
             Vec direction = position.direction();
             position = position.add(direction).sub(0, 0.2, 0); //????????
 
-            arrow.shoot(position, power * 3, 1.0);
+            arrow.shoot(position, power * 3, 0.0);
 
             Vec playerVel = player.getVelocity();
             arrow.setVelocity(arrow.getVelocity().add(playerVel.x(),
