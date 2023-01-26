@@ -8,6 +8,8 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.player.PlayerSpawnEvent;
+import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.Material;
 import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 
@@ -76,6 +78,7 @@ public class GameTimeline {
         players().forEach((player, team) -> {
             player.getInventory().setItemStack(0, Items.BOW.get(team));
             player.getInventory().setItemStack(1, Items.PICKAXE.get(team));
+            player.getInventory().setItemStack(10, ItemStack.of(Material.ARROW));
             player.getInventory().setHelmet(Items.HELMET.get(team));
             player.getInventory().setChestplate(Items.CHEST.get(team));
             player.getInventory().setLeggings(Items.LEGGINGS.get(team));

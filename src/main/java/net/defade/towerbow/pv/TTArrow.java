@@ -1,5 +1,8 @@
 package net.defade.towerbow.pv;
 
+import net.defade.towerbow.games.GameInstance;
+import net.defade.towerbow.utils.Utils;
+import net.kyori.adventure.sound.Sound;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -8,6 +11,7 @@ import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.Player;
+import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.entity.metadata.ProjectileMeta;
 import net.minestom.server.entity.metadata.arrow.AbstractArrowMeta;
 import net.minestom.server.event.EventDispatcher;
@@ -15,6 +19,7 @@ import net.minestom.server.event.entity.EntityShootEvent;
 import net.minestom.server.event.entity.projectile.ProjectileUncollideEvent;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.utils.MathUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,14 +41,16 @@ public class TTArrow extends Entity {
     protected int pickupDelay;
     protected int stuckTime;
     protected int ticks;
-    private final int knockback = 2;
+    private final int knockback = 3;
+    private final GameInstance gameInstance;
 
     private final Entity shooter;
     private final boolean hitAnticipation;
     protected boolean noClip;
 
-    public TTArrow(Entity shooter) {
+    public TTArrow(GameInstance gameInstance,Entity shooter) {
         super(EntityType.ARROW);
+        this.gameInstance = gameInstance;
         this.shooter = shooter;
         this.hitAnticipation = false;
         setup();
@@ -112,7 +119,7 @@ public class TTArrow extends Entity {
     }
 
     public void onHit(Entity entity) {
-        if (entity instanceof Player player && shooter instanceof Player shooterPlayer) {
+        if (entity instanceof Player victim && shooter instanceof Player badGuy) {
             if (piercingIgnore.contains(entity.getEntityId())) return;
 
             ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -134,6 +141,15 @@ public class TTArrow extends Entity {
                 damage = (int) Math.min(randomDamage + damage, 2147483647L);
             }
 
+            if (victim.getUuid().equals(badGuy.getUuid())) {
+                victim.damage(DamageType.fromPlayer(badGuy),0);
+                badGuy.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BIT, Sound.Source.NEUTRAL, 1.0f, 1.0f));
+            } else {
+                victim.damage(DamageType.fromPlayer(badGuy),damage);
+                badGuy.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BELL, Sound.Source.NEUTRAL, 1.0f, 1.0f));
+            }
+
+
             if (knockback > 0) {
                 Vec knockbackVec = getVelocity()
                         .mul(1, 0, 1)
@@ -143,16 +159,17 @@ public class TTArrow extends Entity {
 
 
                 if (knockbackVec.lengthSquared() > 0) {
-                    Vec newVel = player.getVelocity().add(knockbackVec);
-                    player.setVelocity(newVel);
+                    Vec newVel = victim.getVelocity().add(knockbackVec);
+                    victim.setVelocity(newVel);
                 }
 
             }
 
             //Do stuff to shooter
-            shooterPlayer.sendMessage("You shot");
+            badGuy.sendMessage("You shot");
             // Do stuff to victime
-            player.sendMessage("You got shot");
+            victim.sendMessage("You got shot");
+            remove();
         }
     }
 

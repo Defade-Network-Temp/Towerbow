@@ -1,14 +1,17 @@
 package net.defade.towerbow.games;
 
 import net.defade.towerbow.pv.TTArrow;
+import net.kyori.adventure.sound.Sound;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.item.ItemUpdateStateEvent;
+import net.minestom.server.event.player.PlayerChangeHeldSlotEvent;
 import net.minestom.server.event.player.PlayerItemAnimationEvent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.tag.Tag;
 
 import java.util.Objects;
@@ -20,7 +23,7 @@ Inspired from : https://github.com/TogAr2/MinestomPvP/blob/b5bff43012f0a826aaf25
 */
 
 public class GamePvpHandler {
-    private static final Tag<Long> ITEM_USE_START_TIME = Tag.Long("itemUseStartTime");
+    private static final Tag<Long> BOW_USE_START_TIME = Tag.Long("itemUseStartTime");
 
     private final GameInstance instance;
     private final GameEvents events;
@@ -33,8 +36,12 @@ public class GamePvpHandler {
     }
 
     private void addTrackerListener() {
-        events.getPlayerInstanceNode().addListener(PlayerItemAnimationEvent.class, event ->
-                event.getPlayer().setTag(ITEM_USE_START_TIME, System.currentTimeMillis()));
+        events.getPlayerInstanceNode().addListener(PlayerItemAnimationEvent.class, event -> {
+            if (event.getItemAnimationType() == PlayerItemAnimationEvent.ItemAnimationType.BOW) {
+                event.getPlayer().setTag(BOW_USE_START_TIME, System.currentTimeMillis());
+                event.getPlayer().sendMessage("StartLoadingItem → Bow");
+            }
+        });
     }
 
     private void addBowListener() {
@@ -44,11 +51,12 @@ public class GamePvpHandler {
             System.out.println("Event called");
             // TODO if (!instance.getGameStatus().isPlaying()) return;
 
-            long useDuration = System.currentTimeMillis() - player.getTag(ITEM_USE_START_TIME);
+            long useDuration = System.currentTimeMillis() - player.getTag(BOW_USE_START_TIME);
             double power = getBowPower(useDuration);
+            player.sendMessage("Power: " + power + "useDuration: " + useDuration);
             if (power < 0.1) return;
             System.out.println("Enough power");
-            TTArrow arrow = new TTArrow(player);
+            TTArrow arrow = new TTArrow(instance, player);
 
             Pos position = player.getPosition().add(0D, player.getEyeHeight(), 0D);
             arrow.setInstance(Objects.requireNonNull(player.getInstance()),
@@ -58,6 +66,8 @@ public class GamePvpHandler {
             position = position.add(direction).sub(0, 0.2, 0); //????????
 
             arrow.shoot(position, power * 3, 0.0);
+
+            player.playSound(Sound.sound(SoundEvent.ENTITY_ARROW_SHOOT, Sound.Source.PLAYER, 1.0f, 1.0f));
 
             Vec playerVel = player.getVelocity();
             arrow.setVelocity(arrow.getVelocity().add(playerVel.x(),
