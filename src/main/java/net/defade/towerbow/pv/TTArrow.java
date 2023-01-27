@@ -93,6 +93,7 @@ public class TTArrow extends Entity {
 
     // Called when the arrow is stuck in a block, in this case the arrow is deleted
     public void onStuck() {
+        this.setVelocity(Vec.ZERO);
         if (stuckTime > 20*60) remove();
     }
 

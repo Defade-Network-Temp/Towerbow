@@ -6,8 +6,8 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventListener;
+import net.minestom.server.event.inventory.PlayerInventoryItemChangeEvent;
 import net.minestom.server.event.item.ItemUpdateStateEvent;
-import net.minestom.server.event.player.PlayerChangeHeldSlotEvent;
 import net.minestom.server.event.player.PlayerItemAnimationEvent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
@@ -19,7 +19,6 @@ import java.util.Objects;
 Most of the code from this class is inspired by MinestomPVP.
 MinestomPVP repo : https://github.com/TogAr2/MinestomPvP
 Inspired from : https://github.com/TogAr2/MinestomPvP/blob/b5bff43012f0a826aaf25a89dcfde2b0aaac09a4/src/main/java/io/github/bloepiloepi/pvp/projectile/ProjectileListener.java
-
 */
 
 public class GamePvpHandler {
@@ -60,7 +59,7 @@ public class GamePvpHandler {
 
             Pos position = player.getPosition().add(0D, player.getEyeHeight(), 0D);
             arrow.setInstance(Objects.requireNonNull(player.getInstance()),
-                    position.sub(0, 0.10000000149011612D, 0)); //????????
+                    position.sub(0, 0.1D, 0));
 
             Vec direction = position.direction();
             position = position.add(direction).sub(0, 0.2, 0); //????????
