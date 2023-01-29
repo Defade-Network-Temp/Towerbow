@@ -14,9 +14,12 @@ public enum Items {
                 .build();
     }),
     HELMET((team)-> {
-        return ItemStack.builder(Material.LEATHER_HELMET)
+       Material material;
+        if(team == Team.RED) material = Material.RED_STAINED_GLASS;
+        else if (team == Team.BLUE) material = Material.BLUE_STAINED_GLASS;
+        else material = Material.DRAGON_HEAD; // This shouldn't happen
+        return ItemStack.builder(material)
                 .displayName(Component.text(""))
-                .meta(new LeatherArmorMeta.Builder().color(team.getColor()).build())
                 .build();
     }),
     CHEST((team)-> {

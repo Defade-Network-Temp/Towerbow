@@ -141,35 +141,24 @@ public class TTArrow extends Entity {
                 int randomDamage = random.nextInt(damage / 2 + 2);
                 damage = (int) Math.min(randomDamage + damage, 2147483647L);
             }
+            if (gameInstance.isPvpOn()) {
+                gameInstance.bowDamage(victim, badGuy, damage);
 
-            if (victim.getUuid().equals(badGuy.getUuid())) {
-                victim.damage(DamageType.fromPlayer(badGuy),0);
-                badGuy.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BIT, Sound.Source.NEUTRAL, 1.0f, 1.0f));
-            } else {
-                victim.damage(DamageType.fromPlayer(badGuy),damage);
-                badGuy.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BELL, Sound.Source.NEUTRAL, 1.0f, 1.0f));
-            }
-
-
-            if (knockback > 0) {
-                Vec knockbackVec = getVelocity()
-                        .mul(1, 0, 1)
-                        .normalize().mul(knockback * 0.6);
-                knockbackVec = knockbackVec.add(0, 0.1, 0)
-                        .mul(MinecraftServer.TICK_PER_SECOND / 2.0);
+                if (knockback > 0) {
+                    Vec knockbackVec = getVelocity()
+                            .mul(1, 0, 1)
+                            .normalize().mul(knockback * 0.6);
+                    knockbackVec = knockbackVec.add(0, 0.1, 0)
+                            .mul(MinecraftServer.TICK_PER_SECOND / 2.0);
 
 
-                if (knockbackVec.lengthSquared() > 0) {
-                    Vec newVel = victim.getVelocity().add(knockbackVec);
-                    victim.setVelocity(newVel);
+                    if (knockbackVec.lengthSquared() > 0) {
+                        Vec newVel = victim.getVelocity().add(knockbackVec);
+                        victim.setVelocity(newVel);
+                    }
+
                 }
-
             }
-
-            //Do stuff to shooter
-            badGuy.sendMessage("You shot");
-            // Do stuff to victime
-            victim.sendMessage("You got shot");
             remove();
         }
     }

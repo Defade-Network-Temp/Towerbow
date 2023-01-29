@@ -75,11 +75,41 @@ public class GameInstance extends InstanceContainer {
         displayer.destroy();
     }
 
+    public void bowDamage(Player victim, Player shooter, int damage) {
+        if (victim.getUuid().equals(shooter.getUuid())) {
+            damagePlayer(shooter, DamageType.fromPlayer(shooter), 0);
+            shooter.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BIT, Sound.Source.NEUTRAL, 1.0f, 1.0f));
+        } else if (sameTeamDiffPlayer(shooter, victim)) {
+            damagePlayer(shooter, DamageType.fromPlayer(shooter), damage);
+            shooter.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BASEDRUM, Sound.Source.NEUTRAL, 1.0f, 1.0f));
+        } else {
+            damagePlayer(victim, DamageType.fromPlayer(shooter), damage);
+            shooter.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BELL, Sound.Source.NEUTRAL, 1.0f, 1.0f));
+        }
+    }
+
+    private void damagePlayer(Player player,DamageType type, int damage) {
+        if (player.getHealth() - damage > 0) {
+            player.damage(type, damage);
+        } else {
+            //TODO implement death
+            player.setHealth(player.getMaxHealth());
+        }
+    }
+
+    private boolean sameTeamDiffPlayer(Player p1, Player p2) {
+        return players.get(p2) == players.get(p1) && !p2.getUuid().equals(p1.getUuid());
+    }
+
     public void addBlock(Point point) {
         blocks.put(point, System.currentTimeMillis());
     }
 
     public void removeBlock(Point point) {
         blocks.remove(point);
+    }
+
+    public boolean isPvpOn() {
+        return gameStatus.isPlaying();
     }
 }

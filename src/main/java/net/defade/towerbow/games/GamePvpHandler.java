@@ -8,6 +8,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.inventory.PlayerInventoryItemChangeEvent;
 import net.minestom.server.event.item.ItemUpdateStateEvent;
+import net.minestom.server.event.player.PlayerChangeHeldSlotEvent;
 import net.minestom.server.event.player.PlayerItemAnimationEvent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
@@ -22,7 +23,7 @@ Inspired from : https://github.com/TogAr2/MinestomPvP/blob/b5bff43012f0a826aaf25
 */
 
 public class GamePvpHandler {
-    private static final Tag<Long> BOW_USE_START_TIME = Tag.Long("itemUseStartTime");
+    private static final Tag<Long> BOW_USE_START_TIME = Tag.Long("ItemUseStartTime");
 
     private final GameInstance instance;
     private final GameEvents events;
@@ -38,7 +39,6 @@ public class GamePvpHandler {
         events.getPlayerInstanceNode().addListener(PlayerItemAnimationEvent.class, event -> {
             if (event.getItemAnimationType() == PlayerItemAnimationEvent.ItemAnimationType.BOW) {
                 event.getPlayer().setTag(BOW_USE_START_TIME, System.currentTimeMillis());
-                event.getPlayer().sendMessage("StartLoadingItem → Bow");
             }
         });
     }
@@ -47,14 +47,11 @@ public class GamePvpHandler {
         events.getPlayerInstanceNode().addListener(EventListener.builder(ItemUpdateStateEvent.class).handler(event -> {
             Player player = event.getPlayer();
             ItemStack stack = event.getItemStack();
-            System.out.println("Event called");
             // TODO if (!instance.getGameStatus().isPlaying()) return;
 
             long useDuration = System.currentTimeMillis() - player.getTag(BOW_USE_START_TIME);
             double power = getBowPower(useDuration);
-            player.sendMessage("Power: " + power + "useDuration: " + useDuration);
             if (power < 0.1) return;
-            System.out.println("Enough power");
             TTArrow arrow = new TTArrow(instance, player);
 
             Pos position = player.getPosition().add(0D, player.getEyeHeight(), 0D);
@@ -62,7 +59,7 @@ public class GamePvpHandler {
                     position.sub(0, 0.1D, 0));
 
             Vec direction = position.direction();
-            position = position.add(direction).sub(0, 0.2, 0); //????????
+            position = position.add(direction).sub(0, 0.2, 0);
 
             arrow.shoot(position, power * 3, 0.0);
 
