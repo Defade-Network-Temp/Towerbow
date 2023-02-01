@@ -115,10 +115,10 @@ public class GameTimeline {
             player.teleport(new Pos(x, y + 2, z));
             player.facePosition(Player.FacePoint.EYE, new Pos(0, y, 0));
         });
-        // Give blindness for 3 seconds
+        // Give darkness for 5 seconds
         players().forEach((player, team) -> {
-            player.addEffect(new Potion(PotionEffect.BLINDNESS, (byte) 1, 5 * 20));
-            player.addEffect(new Potion(PotionEffect.JUMP_BOOST, (byte)1, 30 * 20));
+            player.addEffect(new Potion(PotionEffect.DARKNESS, (byte) 1, 5 * 20));
+            player.addEffect(new Potion(PotionEffect.JUMP_BOOST, (byte)2, 30 * 20));
         });
         // Remove player freeze in 5 seconds
         MinecraftServer.getSchedulerManager().scheduleTask(() -> {
