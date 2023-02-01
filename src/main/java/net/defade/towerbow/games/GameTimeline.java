@@ -117,7 +117,8 @@ public class GameTimeline {
         });
         // Give blindness for 3 seconds
         players().forEach((player, team) -> {
-            player.addEffect(new Potion(PotionEffect.BLINDNESS, (byte) 1, 3 * 60));
+            player.addEffect(new Potion(PotionEffect.BLINDNESS, (byte) 1, 5 * 20));
+            player.addEffect(new Potion(PotionEffect.JUMP_BOOST, (byte)1, 30 * 20));
         });
         // Remove player freeze in 5 seconds
         MinecraftServer.getSchedulerManager().scheduleTask(() -> {
@@ -131,6 +132,7 @@ public class GameTimeline {
 
     private void phaseOne() {
         setStatus(GameStatus.PHASE_1);
+
 
     }
 

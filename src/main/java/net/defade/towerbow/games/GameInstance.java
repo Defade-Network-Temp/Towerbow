@@ -8,10 +8,14 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.instance.InstanceContainer;
-import net.minestom.server.network.packet.server.play.SoundEffectPacket;
+import net.minestom.server.instance.block.Block;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.tag.Tag;
+import net.minestom.server.timer.Task;
+import net.minestom.server.timer.TaskSchedule;
 import net.minestom.server.world.DimensionType;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +30,7 @@ public class GameInstance extends InstanceContainer {
     private GameStatus gameStatus = GameStatus.CREATING;
     private final Map<Player, Team> players = new HashMap<>();
     private final Map<Point, Long> blocks = new HashMap<>();
+    private  Task clock;
 
     public GameInstance(GameManager gameManager) {
         super(UUID.randomUUID(), DimensionType.OVERWORLD);
@@ -34,6 +39,7 @@ public class GameInstance extends InstanceContainer {
         timeline = new GameTimeline(this);
         this.displayer = new GameDisplayer(this);
         pvpHandler = new GamePvpHandler(this);
+        launchClock();
     }
 
     public boolean containsTP(Player player) {
@@ -73,6 +79,7 @@ public class GameInstance extends InstanceContainer {
     public void destroy() {
         events.unregister();
         displayer.destroy();
+        clock.cancel();
     }
 
     public void bowDamage(Player victim, Player shooter, int damage) {
@@ -110,6 +117,21 @@ public class GameInstance extends InstanceContainer {
     }
 
     public boolean isPvpOn() {
-        return gameStatus.isPlaying();
+        return gameStatus.isPlaying() && gameStatus != GameStatus.STARTING;
+    }
+
+    private void launchClock() {
+        clock = MinecraftServer.getSchedulerManager().submitTask(()-> {
+            long now = System.currentTimeMillis();
+            for (Point point : new ArrayList<>(blocks.keySet())) {
+                if (now - blocks.get(point) > 3*60*1000) {
+                    super.setBlock(point, Block.AIR);
+                    blocks.remove(point);
+                } else if (now - blocks.get(point) > 2*60*1000) {
+                    super.setBlock(point, Block.MOSSY_COBBLESTONE);
+                }
+            }
+           return TaskSchedule.tick(10);
+        });
     }
 }

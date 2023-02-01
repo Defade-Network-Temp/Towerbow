@@ -4,7 +4,7 @@ public enum GameStatus {
     CREATING(true, false),
     WAITING_PLAYERS_FOR_DEMO(true, false),
     WAITING_PLAYER_OPTIONAL(true, false),
-    STARTING(false, false),
+    STARTING(false, true),
     PHASE_1(true, true),
     PHASE_2(false, true),
     PHASE_3(false, true),

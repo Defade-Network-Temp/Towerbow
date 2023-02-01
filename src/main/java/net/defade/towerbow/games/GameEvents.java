@@ -45,6 +45,9 @@ public class GameEvents {
         playerInstanceNode.addListener(PlayerBlockPlaceEvent.class, event -> {
             if (instance.getGameStatus().isPlaying()) {
                 instance.addBlock(event.getBlockPosition());
+                event.consumeBlock(false);
+            } else {
+                event.setCancelled(true);
             }
         });
 
