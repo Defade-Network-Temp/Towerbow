@@ -84,13 +84,13 @@ public class GameInstance extends InstanceContainer {
     public void bowDamage(Player victim, Player shooter, int damage) {
         if (victim.getUuid().equals(shooter.getUuid())) {
             damagePlayer(shooter, DamageType.fromPlayer(shooter), 0);
-            shooter.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BIT, Sound.Source.NEUTRAL, 1.0f, 1.0f));
+            shooter.playSound(Sound.sound(SoundEvent.ENTITY_ARROW_HIT, Sound.Source.NEUTRAL, 1.0f, 1.0f));
         } else if (sameTeamDiffPlayer(shooter, victim)) {
             damagePlayer(shooter, DamageType.fromPlayer(shooter), damage);
             shooter.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BASEDRUM, Sound.Source.NEUTRAL, 1.0f, 1.0f));
         } else {
             damagePlayer(victim, DamageType.fromPlayer(shooter), damage);
-            shooter.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BELL, Sound.Source.NEUTRAL, 1.0f, 1.0f));
+            shooter.playSound(Sound.sound(SoundEvent.ENTITY_ARROW_HIT_PLAYER, Sound.Source.NEUTRAL, 1.0f, 1.0f));
         }
     }
 
@@ -126,11 +126,13 @@ public class GameInstance extends InstanceContainer {
                 if (now - blocks.get(point) > 3*60*1000) {
                     super.setBlock(point, Block.AIR);
                     blocks.remove(point);
-                } else if (now - blocks.get(point) > 2*60*1000) {
+                    //TODO Do a block destroy animation
+                } else if (now - blocks.get(point) > (2*60+55)*1000) {
                     super.setBlock(point, Block.MOSSY_COBBLESTONE);
+                    //TODO Do a sound when the block transforms : .playSound(Sound.sound(SoundEvent.BLOCK_MOSS_PLACE, Sound.Source.NEUTRAL, 1.0f, 1.0f));
                 }
             }
-           return TaskSchedule.tick(10);
+           return TaskSchedule.tick(2);
         });
     }
 }
