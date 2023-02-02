@@ -1,8 +1,6 @@
 package net.defade.towerbow.pv;
 
 import net.defade.towerbow.games.GameInstance;
-import net.defade.towerbow.utils.Utils;
-import net.kyori.adventure.sound.Sound;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -11,7 +9,6 @@ import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.Player;
-import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.entity.metadata.ProjectileMeta;
 import net.minestom.server.entity.metadata.arrow.AbstractArrowMeta;
 import net.minestom.server.event.EventDispatcher;
@@ -19,15 +16,11 @@ import net.minestom.server.event.entity.EntityShootEvent;
 import net.minestom.server.event.entity.projectile.ProjectileUncollideEvent;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
-import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.utils.MathUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -246,16 +239,13 @@ public class TTArrow extends Entity {
             if (super.onGround) {
                 return;
             }
-            EventDispatcher.call(new ProjectileHitEvent.ProjectileBlockHitEvent(this));
             super.onGround = true;
             this.velocity = Vec.ZERO;
             sendPacketToViewersAndSelf(getVelocityPacket());
             setNoGravity(true);
             onStuck();
         } else {
-            Entity entity = ((State.HitEntity) state).entity;
-            ProjectileHitEvent.ProjectileEntityHitEvent event = new ProjectileHitEvent.ProjectileEntityHitEvent(this, entity);
-            EventDispatcher.callCancellable(event, () -> onHit(entity));
+            onHit(((State.HitEntity) state).entity);
         }
     }
 

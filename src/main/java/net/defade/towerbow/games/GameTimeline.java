@@ -5,26 +5,19 @@ import net.defade.towerbow.utils.Team;
 import net.defade.towerbow.utils.Utils;
 import net.defade.towerbow.map.TowerbowMapGenerator;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.attribute.Attribute;
-import net.minestom.server.attribute.AttributeModifier;
-import net.minestom.server.attribute.AttributeOperation;
-import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventListener;
-import net.minestom.server.event.entity.EntityDamageEvent;
-import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
-import net.minestom.server.item.ItemStack;
-import net.minestom.server.item.Material;
 import net.minestom.server.potion.Potion;
 import net.minestom.server.potion.PotionEffect;
-import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameTimeline {

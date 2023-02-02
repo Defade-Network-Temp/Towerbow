@@ -2,7 +2,6 @@ package net.defade.towerbow.games;
 
 import net.defade.towerbow.utils.Team;
 import net.defade.towerbow.utils.Utils;
-import net.defade.towerbow.games.GameInstance;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -10,6 +9,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
+
 import java.util.Map;
 
 public class GameDisplayer {
@@ -30,13 +30,13 @@ public class GameDisplayer {
     }
 
     private void display() {
-        updateBossbar();
+        updateBossBar();
         for (Player player : players.keySet()) {
             player.showBossBar(bossBar);
         }
     }
 
-    private void updateBossbar() {
+    private void updateBossBar() {
         switch (instance.getGameStatus()) {
             case WAITING_PLAYERS_FOR_DEMO -> {
                 bossBar.name(Component.text("Waiting players...").color(NamedTextColor.YELLOW));
@@ -51,9 +51,7 @@ public class GameDisplayer {
                     bossBar.progress(progress);
                 }
             }
-            default -> {
-                bossBar.name(Component.text("Loading... ").color(NamedTextColor.YELLOW));
-            }
+            default -> bossBar.name(Component.text("Loading... ").color(NamedTextColor.YELLOW));
         }
     }
 

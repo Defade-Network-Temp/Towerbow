@@ -3,22 +3,16 @@ package net.defade.towerbow.games;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerLoginEvent;
-import net.minestom.server.utils.NamespaceID;
-import net.minestom.server.world.DimensionType;
-import net.minestom.server.world.DimensionTypeManager;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class GameManager {
     private static final int MAX_INSTANCE_PER_SERVER = 15;
-    public static final NamespaceID DIM_NAME_SPACE_ID = NamespaceID.from("tower_dimension");
-    private final DimensionTypeManager towerDimensionManager;
     private final Set<GameInstance> gameInstances = new HashSet<>();
 
     public GameManager() {
-        towerDimensionManager = new DimensionTypeManager();
-        towerDimensionManager.addDimension(DimensionType.builder(DIM_NAME_SPACE_ID).ambientLight(1f).build());
         updateGameInstances();
         MinecraftServer.getGlobalEventHandler().addListener(PlayerLoginEvent.class, playerLoginEvent -> {
             Player player = playerLoginEvent.getPlayer();
@@ -36,7 +30,7 @@ public class GameManager {
         // Check how many game instances are available to join
         long availableGamesCount = gameInstances.stream().filter(GameInstance::canAcceptPlayers).count();
         // If there is less than two, create a new instance
-        if (availableGamesCount < 2) createGameInstance();
+        if (availableGamesCount < 2 && gameInstances.size() <= MAX_INSTANCE_PER_SERVER) createGameInstance();
     }
 
     private void createGameInstance() {
@@ -60,9 +54,5 @@ public class GameManager {
             if (gameInstance.canAcceptPlayers()) return gameInstance;
         }
         return null;
-    }
-
-    public DimensionTypeManager getTowerDimensionManager() {
-        return towerDimensionManager;
     }
 }

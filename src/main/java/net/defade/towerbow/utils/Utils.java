@@ -6,6 +6,7 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.sound.SoundEvent;
+
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 

@@ -1,14 +1,14 @@
 package net.defade.towerbow.games;
 
 import net.defade.towerbow.pv.TTArrow;
+import net.defade.towerbow.utils.Messager;
 import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventListener;
-import net.minestom.server.event.inventory.PlayerInventoryItemChangeEvent;
 import net.minestom.server.event.item.ItemUpdateStateEvent;
-import net.minestom.server.event.player.PlayerChangeHeldSlotEvent;
 import net.minestom.server.event.player.PlayerItemAnimationEvent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
@@ -46,8 +46,11 @@ public class GamePvpHandler {
     private void addBowListener() {
         events.getPlayerInstanceNode().addListener(EventListener.builder(ItemUpdateStateEvent.class).handler(event -> {
             Player player = event.getPlayer();
-            ItemStack stack = event.getItemStack();
-            // TODO if (!instance.getGameStatus().isPlaying()) return;
+            if (!instance.getGameStatus().isPlaying()) return;
+            if (instance.getGameStatus() == GameStatus.STARTING) {
+                Messager.sendWarningFromGame(player, Component.text("You can't use your bow now !"));
+                return;
+            }
 
             long useDuration = System.currentTimeMillis() - player.getTag(BOW_USE_START_TIME);
             double power = getBowPower(useDuration);

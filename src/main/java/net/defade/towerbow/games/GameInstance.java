@@ -72,7 +72,6 @@ public class GameInstance extends InstanceContainer {
     }
 
     public void addTPlayer(Player player, Team team) {
-        player.setTag(Tag.UUID("uuid"), player.getUuid());
         players.put(player, team);
     }
 
