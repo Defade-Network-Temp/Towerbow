@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 //Most of the code from this class is inspired by MinestomPVP.
 //        MinestomPVP repo : https://github.com/TogAr2/MinestomPvP
 
-public class TTArrow extends Entity {
+public class TowerbowArrow extends Entity {
     private static final double ARROW_BASE_DAMAGE = 2.0;
 
     private final Set<Integer> piercingIgnore = new HashSet<>();
@@ -41,7 +41,7 @@ public class TTArrow extends Entity {
     private final boolean hitAnticipation;
     protected boolean noClip;
 
-    public TTArrow(GameInstance gameInstance,Entity shooter) {
+    public TowerbowArrow(GameInstance gameInstance, Entity shooter) {
         super(EntityType.ARROW);
         this.gameInstance = gameInstance;
         this.shooter = shooter;
@@ -203,7 +203,7 @@ public class TTArrow extends Entity {
     @Override
     public void tick(long time) {
         if (hitAnticipation && getAliveTicks() == 0) {
-            final TTArrow.State state = guessNextState(getPosition());
+            final TowerbowArrow.State state = guessNextState(getPosition());
             handleState(state);
             if (state != State.Flying) return;
         }
@@ -211,7 +211,7 @@ public class TTArrow extends Entity {
         final Pos posBefore = getPosition();
         super.tick(time);
         final Pos posNow = getPosition();
-        final TTArrow.State state = hitAnticipation ? guessNextState(posNow) : getState(posBefore, posNow, true);
+        final TowerbowArrow.State state = hitAnticipation ? guessNextState(posNow) : getState(posBefore, posNow, true);
         handleState(state);
     }
 

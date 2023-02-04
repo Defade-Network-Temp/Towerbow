@@ -94,7 +94,7 @@ public class GameInstance extends InstanceContainer {
         }
     }
 
-    private void damagePlayer(Player player,DamageType type, int damage) {
+    public void damagePlayer(Player player,DamageType type, int damage) {
         if (player.getHealth() - damage > 0) {
             player.damage(type, damage);
         } else {

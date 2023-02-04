@@ -1,6 +1,6 @@
 package net.defade.towerbow.games;
 
-import net.defade.towerbow.pv.TTArrow;
+import net.defade.towerbow.pv.TowerbowArrow;
 import net.defade.towerbow.utils.Messager;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
@@ -10,7 +10,6 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.item.ItemUpdateStateEvent;
 import net.minestom.server.event.player.PlayerItemAnimationEvent;
-import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.tag.Tag;
@@ -55,7 +54,7 @@ public class GamePvpHandler {
             long useDuration = System.currentTimeMillis() - player.getTag(BOW_USE_START_TIME);
             double power = getBowPower(useDuration);
             if (power < 0.1) return;
-            TTArrow arrow = new TTArrow(instance, player);
+            TowerbowArrow arrow = new TowerbowArrow(instance, player);
 
             Pos position = player.getPosition().add(0D, player.getEyeHeight(), 0D);
             arrow.setInstance(Objects.requireNonNull(player.getInstance()),
