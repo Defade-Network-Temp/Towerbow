@@ -47,7 +47,7 @@ public class GamePvpHandler {
             Player player = event.getPlayer();
             if (!instance.getGameStatus().isPlaying()) return;
             if (instance.getGameStatus() == GameStatus.STARTING) {
-                Messager.sendWarningFromGame(player, Component.text("You can't use your bow now !"));
+                Messager.sendPlayerNotificationImpossible(player, Component.text("PVP off for the moment"));
                 return;
             }
 

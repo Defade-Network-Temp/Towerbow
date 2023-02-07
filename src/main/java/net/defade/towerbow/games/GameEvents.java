@@ -1,16 +1,19 @@
 package net.defade.towerbow.games;
 
+import net.defade.towerbow.utils.Messager;
+import net.defade.towerbow.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.minestom.server.entity.Player;
 import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.item.ItemDropEvent;
-import net.minestom.server.event.player.PlayerBlockBreakEvent;
-import net.minestom.server.event.player.PlayerBlockPlaceEvent;
-import net.minestom.server.event.player.PlayerMoveEvent;
+import net.minestom.server.event.player.*;
 import net.minestom.server.event.trait.InstanceEvent;
 import net.minestom.server.event.trait.PlayerEvent;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 
 public class GameEvents {
@@ -52,15 +55,39 @@ public class GameEvents {
         });
 
         playerInstanceNode.addListener(ItemDropEvent.class, event -> event.setCancelled(true));
+
         playerInstanceNode.addListener(PlayerMoveEvent.class, event -> {
            boolean isOnGround = event.isOnGround();
            if (isOnGround && event.getPlayer().hasTag(fallingTag)) {
-               int damage = (int) ((event.getPlayer().getTag(fallingTag)) - event.getPlayer().getPosition().y() - 3.0);
+               int damage = (int) ((event.getPlayer().getTag(fallingTag)) - event.getPlayer().getPosition().y() - 3.0)/2;
                event.getPlayer().removeTag(fallingTag);
-               if (damage > 0) instance.damagePlayer(event.getPlayer(),DamageType.GRAVITY, damage);
+               if (damage > 0) instance.damagePlayer(event.getPlayer(),null,DamageType.GRAVITY, damage);
            } else if (!isOnGround && !event.getPlayer().hasTag(fallingTag)) {
                event.getPlayer().setTag(fallingTag, event.getPlayer().getPosition().y());
            }
+        });
+
+        playerInstanceNode.addListener(PlayerPreEatEvent.class, event -> {
+            if (instance.getGameStatus().isPlaying() && event.getItemStack().material() == Material.GOLDEN_APPLE) {
+                Player player = event.getPlayer();
+                float health = player.getHealth();
+                float maxHealth = player.getMaxHealth();
+                if (health == maxHealth) {
+                    event.setCancelled(true);
+                    Messager.sendPlayerNotificationWarning(player, Component.text("Health is full!"));
+                }
+            }
+        });
+        playerInstanceNode.addListener(PlayerEatEvent.class, event -> {
+            if (instance.getGameStatus().isPlaying() && event.getItemStack().material() == Material.GOLDEN_APPLE) {
+                Player player = event.getPlayer();
+                float health = player.getHealth();
+                float maxHealth = player.getMaxHealth();
+                if (health < maxHealth) {
+                    player.setHealth(maxHealth);
+                    event.getItemStack().consume(1);
+                }
+            }
         });
     }
 

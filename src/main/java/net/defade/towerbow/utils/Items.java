@@ -8,6 +8,7 @@ import net.minestom.server.item.*;
 import net.minestom.server.item.metadata.LeatherArmorMeta;
 
 import javax.naming.Name;
+import java.util.Objects;
 import java.util.function.Function;
 
 public enum Items {
@@ -62,6 +63,13 @@ public enum Items {
                         .hideFlag(ItemHideFlag.HIDE_ENCHANTS, ItemHideFlag.HIDE_ATTRIBUTES))
                 .build();
     }),
+    GAPPLE((team)-> {
+        return ItemStack.builder(Material.GOLDEN_APPLE)
+                .displayName(Component.text("GAPPLE").color(TextColor.color(NamedTextColor.GOLD)).decoration(TextDecoration.BOLD, false))
+                .meta(builder -> builder.enchantment(Enchantment.SHARPNESS,  (short) 1)
+                        .hideFlag(ItemHideFlag.HIDE_ENCHANTS, ItemHideFlag.HIDE_ATTRIBUTES))
+                .build();
+    }),
     ;
 
     private final Function<Team, ItemStack> itemStackFunction;
@@ -70,7 +78,10 @@ public enum Items {
        this.itemStackFunction = itemStackFunction;
     }
 
+    public ItemStack get() {
+        return get(null);
+    }
     public ItemStack get(Team team) {
-        return itemStackFunction.apply(team);
+        return itemStackFunction.apply(Objects.requireNonNullElse(team, Team.NOT));
     }
 }

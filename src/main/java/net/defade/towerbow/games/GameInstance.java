@@ -1,5 +1,6 @@
 package net.defade.towerbow.games;
 
+import net.defade.towerbow.utils.Items;
 import net.defade.towerbow.utils.Team;
 import net.defade.towerbow.utils.Utils;
 import net.kyori.adventure.sound.Sound;
@@ -14,6 +15,7 @@ import net.minestom.server.tag.Tag;
 import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 import net.minestom.server.world.DimensionType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,23 +85,25 @@ public class GameInstance extends InstanceContainer {
 
     public void bowDamage(Player victim, Player shooter, int damage) {
         if (victim.getUuid().equals(shooter.getUuid())) {
-            damagePlayer(shooter, DamageType.fromPlayer(shooter), 0);
+            damagePlayer(shooter, null, DamageType.fromPlayer(shooter), 0);
             shooter.playSound(Sound.sound(SoundEvent.ENTITY_ARROW_HIT, Sound.Source.NEUTRAL, 1.0f, 1.0f));
         } else if (sameTeamDiffPlayer(shooter, victim)) {
-            damagePlayer(shooter, DamageType.fromPlayer(shooter), damage);
+            damagePlayer(shooter, null, DamageType.fromPlayer(shooter), damage);
             shooter.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BASEDRUM, Sound.Source.NEUTRAL, 1.0f, 1.0f));
         } else {
-            damagePlayer(victim, DamageType.fromPlayer(shooter), damage);
+            damagePlayer(victim, shooter, DamageType.fromPlayer(shooter), damage);
             shooter.playSound(Sound.sound(SoundEvent.ENTITY_ARROW_HIT_PLAYER, Sound.Source.NEUTRAL, 1.0f, 1.0f));
         }
     }
 
-    public void damagePlayer(Player player,DamageType type, int damage) {
-        if (player.getHealth() - damage > 0) {
-            player.damage(type, damage);
+    public void damagePlayer(Player victim, @Nullable Player theBadGuy, DamageType type, int damage) {
+        if (victim.getHealth() - damage > 0) {
+            victim.damage(type, damage);
         } else {
             //TODO implement death
-            player.setHealth(player.getMaxHealth());
+            victim.setHealth(victim.getMaxHealth());
+            if (theBadGuy != null) theBadGuy.getInventory().addItemStack(Items.GAPPLE.get());
+            //TODO add bad guy stats
         }
     }
 
