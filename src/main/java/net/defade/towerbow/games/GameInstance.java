@@ -131,12 +131,12 @@ public class GameInstance extends InstanceContainer {
                     super.setBlock(point, Block.AIR);
                     blocks.remove(point);
                     //TODO Do a block destroy animation
-                } else if (now - blocks.get(point) > (2*60+55)*1000) {
+                } else if (!getBlock(point).compare(Block.MOSSY_COBBLESTONE) && now - blocks.get(point) > (2*60+55)*1000) {
                     super.setBlock(point, Block.MOSSY_COBBLESTONE);
-                    //TODO Do a sound when the block transforms : .playSound(Sound.sound(SoundEvent.BLOCK_MOSS_PLACE, Sound.Source.NEUTRAL, 1.0f, 1.0f));
+                    Utils.sendSoundAround(this, point, SoundEvent.BLOCK_MOSS_PLACE, Sound.Source.BLOCK, 1.0F, 0.0F, null);
                 }
             }
-           return TaskSchedule.tick(2);
+           return TaskSchedule.tick(10);
         });
     }
 }
