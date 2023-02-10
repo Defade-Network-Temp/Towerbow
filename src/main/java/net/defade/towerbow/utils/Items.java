@@ -4,10 +4,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minestom.server.item.*;
+import net.minestom.server.item.Enchantment;
+import net.minestom.server.item.ItemHideFlag;
+import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.LeatherArmorMeta;
 
-import javax.naming.Name;
 import java.util.Objects;
 import java.util.function.Function;
 

@@ -55,4 +55,8 @@ public class GameManager {
         }
         return null;
     }
+
+    public void destroy(String reason) {
+
+    }
 }

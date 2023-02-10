@@ -1,6 +1,6 @@
 package net.defade.towerbow.games;
 
-import net.defade.towerbow.pv.TowerbowArrow;
+import net.defade.towerbow.pvp.TowerbowArrow;
 import net.defade.towerbow.utils.Messager;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;

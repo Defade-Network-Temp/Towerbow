@@ -58,7 +58,7 @@ public class GameEvents {
         playerInstanceNode.addListener(PlayerMoveEvent.class, event -> {
            boolean isOnGround = event.isOnGround();
            if (isOnGround && event.getPlayer().hasTag(fallingTag)) {
-               int damage = (int) ((event.getPlayer().getTag(fallingTag)) - event.getPlayer().getPosition().y() - 3.0)/2;
+               int damage = (int) ((event.getPlayer().getTag(fallingTag)) - event.getPlayer().getPosition().y() - 3.0)/3;
                event.getPlayer().removeTag(fallingTag);
                if (damage > 0) instance.damagePlayer(event.getPlayer(),null,DamageType.GRAVITY, damage);
            } else if (!isOnGround && !event.getPlayer().hasTag(fallingTag)) {

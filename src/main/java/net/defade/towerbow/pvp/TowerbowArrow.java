@@ -1,4 +1,4 @@
-package net.defade.towerbow.pv;
+package net.defade.towerbow.pvp;
 
 import net.defade.towerbow.games.GameInstance;
 import net.minestom.server.MinecraftServer;
@@ -20,7 +20,11 @@ import net.minestom.server.utils.MathUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -84,7 +88,7 @@ public class TowerbowArrow extends Entity {
         }
     }
 
-    // Called when the arrow is stuck in a block, in this case the arrow is deleted
+    // Called when the arrow is stuck in a block, in this case the arrow is deleted after a minute
     public void onStuck() {
         this.setVelocity(Vec.ZERO);
         if (stuckTime > 20*60) remove();
@@ -98,10 +102,7 @@ public class TowerbowArrow extends Entity {
         ((AbstractArrowMeta) getEntityMeta()).setPiercingLevel(piercingLevel);
     }
 
-    /**
-     * Called when this projectile unstucks.
-     * Probably you want to add some random velocity to arrows in such case.
-     */
+
     public void onUnstuck() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         setVelocity(getPosition().direction().mul(

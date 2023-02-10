@@ -7,14 +7,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class Main extends Extension {
 
+    GameManager gameManager;
+
     @Override
     public void initialize() {
-        new GameManager();
+       gameManager =  new GameManager();
     }
 
     @Override
     public void terminate() {
-
+        gameManager.destroy("terminate()");
     }
 
     @Override
