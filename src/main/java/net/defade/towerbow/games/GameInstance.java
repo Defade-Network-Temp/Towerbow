@@ -1,25 +1,19 @@
 package net.defade.towerbow.games;
 
-import net.defade.towerbow.utils.Items;
-import net.defade.towerbow.utils.Team;
+import net.defade.towerbow.players.TPlayer;
 import net.defade.towerbow.utils.Utils;
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
-import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 import net.minestom.server.world.DimensionType;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class GameInstance extends InstanceContainer {
     private final  GameManager gameManager;
@@ -29,7 +23,7 @@ public class GameInstance extends InstanceContainer {
     private final GameEvents events;
     private final GamePvpHandler pvpHandler;
     private GameStatus gameStatus = GameStatus.CREATING;
-    private final Map<Player, Team> players = new HashMap<>();
+    private final List<TPlayer> players = new ArrayList<>();
     private final Map<Point, Long> blocks = new HashMap<>();
     private  Task clock;
 
@@ -41,10 +35,6 @@ public class GameInstance extends InstanceContainer {
         this.displayer = new GameDisplayer(this);
         pvpHandler = new GamePvpHandler(this);
         launchClock();
-    }
-
-    public boolean containsTP(Player player) {
-        return players.containsKey(player);
     }
 
     public boolean canAcceptPlayers() {
@@ -68,46 +58,18 @@ public class GameInstance extends InstanceContainer {
     }
 
 
-    public Map<Player, Team> getTPlayers() {
+    public List<TPlayer> getTPlayers() {
         return players;
     }
 
-    public void addTPlayer(Player player, Team team) {
-        players.put(player, team);
+    public void addTPlayer(Player player) {
+        players.add((TPlayer) player);
     }
 
     public void destroy() {
         events.unregister();
         displayer.destroy();
         clock.cancel();
-    }
-
-    public void bowDamage(Player victim, Player shooter, int damage) {
-        if (victim.getUuid().equals(shooter.getUuid())) {
-            damagePlayer(shooter, null, DamageType.fromPlayer(shooter), 0);
-            shooter.playSound(Sound.sound(SoundEvent.ENTITY_ARROW_HIT, Sound.Source.NEUTRAL, 1.0f, 1.0f));
-        } else if (sameTeamDiffPlayer(shooter, victim)) {
-            damagePlayer(shooter, null, DamageType.fromPlayer(shooter), damage);
-            shooter.playSound(Sound.sound(SoundEvent.BLOCK_NOTE_BLOCK_BASEDRUM, Sound.Source.NEUTRAL, 1.0f, 1.0f));
-        } else {
-            damagePlayer(victim, shooter, DamageType.fromPlayer(shooter), damage);
-            shooter.playSound(Sound.sound(SoundEvent.ENTITY_ARROW_HIT_PLAYER, Sound.Source.NEUTRAL, 1.0f, 1.0f));
-        }
-    }
-
-    public void damagePlayer(Player victim, @Nullable Player theBadGuy, DamageType type, int damage) {
-        if (victim.getHealth() - damage > 0) {
-            victim.damage(type, damage);
-        } else {
-            //TODO implement death
-            victim.setHealth(victim.getMaxHealth());
-            if (theBadGuy != null) theBadGuy.getInventory().addItemStack(Items.GAPPLE.get());
-            //TODO add bad guy stats
-        }
-    }
-
-    private boolean sameTeamDiffPlayer(Player p1, Player p2) {
-        return players.get(p2) == players.get(p1) && !p2.getUuid().equals(p1.getUuid());
     }
 
     public void addBlock(Point point) {

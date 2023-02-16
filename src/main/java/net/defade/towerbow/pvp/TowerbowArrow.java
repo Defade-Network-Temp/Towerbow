@@ -1,6 +1,7 @@
 package net.defade.towerbow.pvp;
 
 import net.defade.towerbow.games.GameInstance;
+import net.defade.towerbow.players.TPlayer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -114,7 +115,9 @@ public class TowerbowArrow extends Entity {
     }
 
     public void onHit(Entity entity) {
-        if (entity instanceof Player victim && shooter instanceof Player badGuy) {
+        if (entity instanceof Player && shooter instanceof Player) {
+            TPlayer victim = (TPlayer) entity;
+            TPlayer badGuy = (TPlayer) shooter;
             if (piercingIgnore.contains(entity.getEntityId())) return;
 
             ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -136,7 +139,7 @@ public class TowerbowArrow extends Entity {
                 damage = (int) Math.min(randomDamage + damage, 2147483647L);
             }
             if (gameInstance.isPvpOn()) {
-                gameInstance.bowDamage(victim, badGuy, damage);
+                victim.bowDamage( badGuy, damage);
 
                 if (knockback > 0) {
                     Vec knockbackVec = getVelocity()

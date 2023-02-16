@@ -1,5 +1,6 @@
 package net.defade.towerbow.games;
 
+import net.defade.towerbow.players.TPlayer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerLoginEvent;
@@ -13,6 +14,7 @@ public class GameManager {
     private final Set<GameInstance> gameInstances = new HashSet<>();
 
     public GameManager() {
+        MinecraftServer.getConnectionManager().setPlayerProvider(TPlayer::new);
         updateGameInstances();
         MinecraftServer.getGlobalEventHandler().addListener(PlayerLoginEvent.class, playerLoginEvent -> {
             Player player = playerLoginEvent.getPlayer();

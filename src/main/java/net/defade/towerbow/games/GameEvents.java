@@ -1,5 +1,6 @@
 package net.defade.towerbow.games;
 
+import net.defade.towerbow.players.TPlayer;
 import net.defade.towerbow.utils.Messager;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
@@ -28,7 +29,7 @@ public class GameEvents {
         this.parentNode = parentNode;
         this.generalEventNode = EventNode.all("game");
         this.instanceEventEventNode = EventNode.type("instance-event", EventFilter.INSTANCE, (instanceEvent, instance1) -> instanceEvent.getInstance().equals(instance));
-        this.playerInstanceNode = EventNode.type("instance-player", EventFilter.PLAYER, (playerEvent, player) -> gameInstance.containsTP(player));
+        this.playerInstanceNode = EventNode.type("instance-player", EventFilter.PLAYER, (playerEvent, player) -> gameInstance.getTPlayers().contains((TPlayer) player));
         parentNode.addChild(generalEventNode);
         generalEventNode.addChild(playerInstanceNode);
         generalEventNode.addChild(instanceEventEventNode);
@@ -57,12 +58,13 @@ public class GameEvents {
 
         playerInstanceNode.addListener(PlayerMoveEvent.class, event -> {
            boolean isOnGround = event.isOnGround();
-           if (isOnGround && event.getPlayer().hasTag(fallingTag)) {
-               int damage = (int) ((event.getPlayer().getTag(fallingTag)) - event.getPlayer().getPosition().y() - 3.0)/3;
-               event.getPlayer().removeTag(fallingTag);
-               if (damage > 0) instance.damagePlayer(event.getPlayer(),null,DamageType.GRAVITY, damage);
-           } else if (!isOnGround && !event.getPlayer().hasTag(fallingTag)) {
-               event.getPlayer().setTag(fallingTag, event.getPlayer().getPosition().y());
+            TPlayer player = (TPlayer) event.getPlayer();
+           if (isOnGround && player.wasFalling()) {
+               int damage = (int) (player.getFalledHeight() - event.getPlayer().getPosition().y() - 3.0)/3;
+               player.stopFalling();
+               if (damage > 0) player.damage(DamageType.GRAVITY, damage);
+           } else if (!isOnGround && !player.wasFalling()) {
+               player.startFalling(event.getPlayer().getPosition().y());
            }
         });
 
