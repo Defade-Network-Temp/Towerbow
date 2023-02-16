@@ -5,6 +5,8 @@ import net.defade.towerbow.utils.Messager;
 import net.defade.towerbow.utils.Team;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.damage.DamageType;
@@ -17,10 +19,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class TPlayer extends Player {
+    public static final Tag<Component> ACTION_BAR_TAG = Tag.Component("actionBarTag");
     private static final Tag<Boolean> IS_DEAD_TAG = Tag.Boolean("isDead");
     private static final Tag<Integer> TEAM_TAG = Tag.Integer("team");
     private static final Tag<Integer> KILLS_TAG = Tag.Integer("kills");
     private static final Tag<Double> FALLING_TAG = Tag.Double("playerBlockFalling");
+
 
     public TPlayer(@NotNull UUID uuid, @NotNull String username, @NotNull PlayerConnection playerConnection) {
         super(uuid, username, playerConnection);
@@ -57,7 +61,7 @@ public class TPlayer extends Player {
             damage(type, damage);
         } else {
             setDead();
-            if (theBadGuy != null){
+            if (theBadGuy != null) {
                 theBadGuy.addKill(true);
             }
         }
@@ -110,6 +114,22 @@ public class TPlayer extends Player {
 
     public double getFalledHeight() {
         return getTag(FALLING_TAG);
+    }
+
+    public Component getActionMessage() {
+        return getTag(ACTION_BAR_TAG);
+    }
+
+    public void setActionMessage(TextComponent message) {
+        setTag(ACTION_BAR_TAG, message);
+    }
+
+    public void sendActionMessage() {
+        if (hasActionMessage()) sendActionBar(getActionMessage());
+    }
+
+    public boolean hasActionMessage() {
+        return hasTag(ACTION_BAR_TAG);
     }
 
     // macros

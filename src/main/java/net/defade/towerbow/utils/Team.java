@@ -5,7 +5,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.color.Color;
 
 public enum Team {
-    NOT(NamedTextColor.WHITE, new Color(0, 0, 0),TextColor.color(0, 0, 0), 0),
+    NOT(NamedTextColor.WHITE, new Color(0, 0, 0), TextColor.color(0, 0, 0), 0),
     BLUE(NamedTextColor.BLUE, new Color(0, 0, 100), TextColor.color(0, 0, 100), 1),
     RED(NamedTextColor.RED, new Color(100, 0, 0), TextColor.color(100, 0, 0), -1);
 
@@ -35,5 +35,19 @@ public enum Team {
 
     public TextColor getTextColor() {
         return textColor;
+    }
+
+    public Team getOpposite() {
+        if (this == BLUE) return RED;
+        else if (this == RED) return BLUE;
+        else return NOT;
+    }
+
+    public boolean isBlue() {
+        return this == BLUE;
+    }
+
+    public boolean isRed() {
+        return this == RED;
     }
 }

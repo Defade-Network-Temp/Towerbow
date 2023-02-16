@@ -23,8 +23,7 @@ public class GameManager {
 
             if (gameInstance != null) {
                 playerLoginEvent.setSpawningInstance(gameInstance);
-            }
-            else player.kick("Manager can't find a game");
+            } else player.kick("Manager can't find a game");
         });
     }
 
@@ -43,7 +42,7 @@ public class GameManager {
         updateGameInstances(); // update the instances
     }
 
-    void destroyGameInstance(GameInstance gameInstance){
+    void destroyGameInstance(GameInstance gameInstance) {
         gameInstance.destroy();
         MinecraftServer.getInstanceManager().unregisterInstance(gameInstance); // unregister the instance
         this.gameInstances.remove(gameInstance); // remove the instance from the list

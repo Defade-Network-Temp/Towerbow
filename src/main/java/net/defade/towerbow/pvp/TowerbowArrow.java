@@ -92,7 +92,7 @@ public class TowerbowArrow extends Entity {
     // Called when the arrow is stuck in a block, in this case the arrow is deleted after a minute
     public void onStuck() {
         this.setVelocity(Vec.ZERO);
-        if (stuckTime > 20*60) remove();
+        if (stuckTime > 20 * 60) remove();
     }
 
     public void setCritical(boolean critical) {
@@ -139,7 +139,7 @@ public class TowerbowArrow extends Entity {
                 damage = (int) Math.min(randomDamage + damage, 2147483647L);
             }
             if (gameInstance.isPvpOn()) {
-                victim.bowDamage( badGuy, damage);
+                victim.bowDamage(badGuy, damage);
 
                 if (knockback > 0) {
                     Vec knockbackVec = getVelocity()
@@ -339,6 +339,7 @@ public class TowerbowArrow extends Entity {
         State StuckInBlock = new State() {
         };
 
-        record HitEntity(Entity entity) implements State {}
+        record HitEntity(Entity entity) implements State {
+        }
     }
 }

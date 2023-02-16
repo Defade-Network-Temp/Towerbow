@@ -12,7 +12,7 @@ public class Main extends Extension {
 
     @Override
     public void initialize() {
-       gameManager =  new GameManager();
+        gameManager = new GameManager();
     }
 
     @Override

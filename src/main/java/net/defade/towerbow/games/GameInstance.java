@@ -16,7 +16,7 @@ import net.minestom.server.world.DimensionType;
 import java.util.*;
 
 public class GameInstance extends InstanceContainer {
-    private final  GameManager gameManager;
+    private final GameManager gameManager;
     private final GameTimeline timeline;
     private final GameDisplayer displayer;
 
@@ -25,7 +25,7 @@ public class GameInstance extends InstanceContainer {
     private GameStatus gameStatus = GameStatus.CREATING;
     private final List<TPlayer> players = new ArrayList<>();
     private final Map<Point, Long> blocks = new HashMap<>();
-    private  Task clock;
+    private Task clock;
 
     public GameInstance(GameManager gameManager) {
         super(UUID.randomUUID(), DimensionType.OVERWORLD);
@@ -47,6 +47,7 @@ public class GameInstance extends InstanceContainer {
     public GameStatus getGameStatus() {
         return gameStatus;
     }
+
     void setGameStatus(GameStatus gameStatus) {
         if (!gameStatus.equals(this.gameStatus)) {
             this.gameStatus = gameStatus;
@@ -85,19 +86,19 @@ public class GameInstance extends InstanceContainer {
     }
 
     private void launchClock() {
-        clock = MinecraftServer.getSchedulerManager().submitTask(()-> {
+        clock = MinecraftServer.getSchedulerManager().submitTask(() -> {
             long now = System.currentTimeMillis();
             for (Point point : new ArrayList<>(blocks.keySet())) {
-                if (now - blocks.get(point) > 3*60*1000) {
+                if (now - blocks.get(point) > 3 * 60 * 1000) {
                     super.setBlock(point, Block.AIR);
                     blocks.remove(point);
                     //TODO Do a block destroy animation
-                } else if (!getBlock(point).compare(Block.MOSSY_COBBLESTONE) && now - blocks.get(point) > (2*60+55)*1000) {
+                } else if (!getBlock(point).compare(Block.MOSSY_COBBLESTONE) && now - blocks.get(point) > (2 * 60 + 55) * 1000) {
                     super.setBlock(point, Block.MOSSY_COBBLESTONE);
                     Utils.sendSoundAround(this, point, SoundEvent.BLOCK_MOSS_PLACE, Sound.Source.BLOCK, 1.0F, 0.0F, null);
                 }
             }
-           return TaskSchedule.tick(10);
+            return TaskSchedule.tick(10);
         });
     }
 }
