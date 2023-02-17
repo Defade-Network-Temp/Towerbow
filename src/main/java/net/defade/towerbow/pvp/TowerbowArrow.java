@@ -6,10 +6,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
-import net.minestom.server.entity.Entity;
-import net.minestom.server.entity.EntityType;
-import net.minestom.server.entity.LivingEntity;
-import net.minestom.server.entity.Player;
+import net.minestom.server.entity.*;
 import net.minestom.server.entity.metadata.ProjectileMeta;
 import net.minestom.server.entity.metadata.arrow.AbstractArrowMeta;
 import net.minestom.server.event.EventDispatcher;
@@ -117,6 +114,7 @@ public class TowerbowArrow extends Entity {
     public void onHit(Entity entity) {
         if (entity instanceof Player && shooter instanceof Player) {
             TPlayer victim = (TPlayer) entity;
+            if (victim.getGameMode() == GameMode.SPECTATOR) return;
             TPlayer badGuy = (TPlayer) shooter;
             if (piercingIgnore.contains(entity.getEntityId())) return;
 

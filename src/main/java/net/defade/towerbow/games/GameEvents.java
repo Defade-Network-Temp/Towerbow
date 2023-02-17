@@ -8,6 +8,7 @@ import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
+import net.minestom.server.event.entity.EntityDamageEvent;
 import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.*;
 import net.minestom.server.event.trait.InstanceEvent;
@@ -62,7 +63,7 @@ public class GameEvents {
            if (isOnGround && player.wasFalling()) {
                int damage = (int) (player.getFalledHeight() - event.getPlayer().getPosition().y() - 3.0)/3;
                player.stopFalling();
-               if (damage > 0) player.damage(DamageType.GRAVITY, damage);
+               if (damage > 0) player.fallDamage(damage);
            } else if (!isOnGround && !player.wasFalling()) {
                player.startFalling(event.getPlayer().getPosition().y());
            }

@@ -44,6 +44,10 @@ public class TPlayer extends Player {
         }
     }
 
+    public void fallDamage(int damage) {
+        damage(null, DamageType.GRAVITY, damage);
+    }
+
     public void setEquipment() {
         Team team = getGameTeam();
         getInventory().setItemStack(0, Items.BOW.get(team));
