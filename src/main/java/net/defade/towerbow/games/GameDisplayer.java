@@ -57,7 +57,18 @@ public class GameDisplayer {
                     bossBar.progress(progress);
                 }
             }
-            default -> bossBar.name(Component.text("Loading... ").color(NamedTextColor.YELLOW));
+            case STARTING -> {
+                bossBar.name(Component.text("Get up !"));
+                bossBar.overlay(BossBar.Overlay.NOTCHED_20);
+                bossBar.color(BossBar.Color.GREEN);
+                bossBar.progress(1.0f);
+            }
+            default -> {
+                bossBar.name(Component.text("Loading... ").color(NamedTextColor.YELLOW));
+                bossBar.progress(1.0f);
+                bossBar.overlay(BossBar.Overlay.PROGRESS);
+                bossBar.color(BossBar.Color.PINK);
+            }
         }
 
         for (Player player : players) {

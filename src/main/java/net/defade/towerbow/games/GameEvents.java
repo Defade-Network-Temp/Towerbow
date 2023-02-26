@@ -9,11 +9,14 @@ import net.minestom.server.event.Event;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.entity.EntityDamageEvent;
+import net.minestom.server.event.inventory.InventoryPreClickEvent;
+import net.minestom.server.event.inventory.PlayerInventoryItemChangeEvent;
 import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.*;
 import net.minestom.server.event.trait.InstanceEvent;
 import net.minestom.server.event.trait.PlayerEvent;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 
@@ -71,25 +74,25 @@ public class GameEvents {
 
         playerInstanceNode.addListener(PlayerPreEatEvent.class, event -> {
             if (instance.getGameStatus().isPlaying() && event.getItemStack().material() == Material.GOLDEN_APPLE) {
-                Player player = event.getPlayer();
-                float health = player.getHealth();
-                float maxHealth = player.getMaxHealth();
-                if (health == maxHealth) {
-                    event.setCancelled(true);
-                    Messager.sendPlayerNotificationWarning(player, Component.text("Health is full!"));
-                }
+                if (event.getPlayer().getHealth() >= event.getPlayer().getMaxHealth()) event.setCancelled(true);
             }
         });
         playerInstanceNode.addListener(PlayerEatEvent.class, event -> {
             if (instance.getGameStatus().isPlaying() && event.getItemStack().material() == Material.GOLDEN_APPLE) {
                 Player player = event.getPlayer();
-                float health = player.getHealth();
-                float maxHealth = player.getMaxHealth();
-                if (health < maxHealth) {
-                    player.setHealth(maxHealth);
-                    event.getItemStack().consume(1);
-                }
+                player.heal();
+
+                int amount =  event.getItemStack().amount();
+                byte slot = player.getHeldSlot();
+                if (amount > 0) player.getInventory().setItemStack(slot, event.getItemStack().withAmount(amount - 1));
+                else player.getInventory().setItemStack(slot, event.getItemStack().withMaterial(Material.AIR));
+
             }
+        });
+
+        playerInstanceNode.addListener(InventoryPreClickEvent.class, event -> {
+            int slot = event.getSlot();
+            if (slot >= 41 && slot<= 44) event.setCancelled(true);
         });
     }
 
