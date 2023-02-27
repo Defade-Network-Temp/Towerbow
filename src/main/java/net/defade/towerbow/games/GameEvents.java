@@ -1,6 +1,7 @@
 package net.defade.towerbow.games;
 
 import net.defade.towerbow.players.TPlayer;
+import net.defade.towerbow.utils.Conf;
 import net.defade.towerbow.utils.Messager;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
@@ -61,15 +62,9 @@ public class GameEvents {
         playerInstanceNode.addListener(ItemDropEvent.class, event -> event.setCancelled(true));
 
         playerInstanceNode.addListener(PlayerMoveEvent.class, event -> {
-           boolean isOnGround = event.isOnGround();
             TPlayer player = (TPlayer) event.getPlayer();
-           if (isOnGround && player.wasFalling()) {
-               int damage = (int) (player.getFalledHeight() - event.getPlayer().getPosition().y() - 3.0)/3;
-               player.stopFalling();
-               if (damage > 0) player.fallDamage(damage);
-           } else if (!isOnGround && !player.wasFalling()) {
-               player.startFalling(event.getPlayer().getPosition().y());
-           }
+            checkFallDamage(event, player);
+
         });
 
         playerInstanceNode.addListener(PlayerPreEatEvent.class, event -> {
@@ -94,6 +89,17 @@ public class GameEvents {
             int slot = event.getSlot();
             if (slot >= 41 && slot<= 44) event.setCancelled(true);
         });
+    }
+
+    private void checkFallDamage(PlayerMoveEvent event, TPlayer player) {
+        boolean isOnGround = event.isOnGround();
+        if (isOnGround && player.wasFalling()) {
+            int damage = (int) (player.getFalledHeight() - event.getPlayer().getPosition().y() - 3.0)/3;
+            player.stopFalling();
+            if (damage > 0) player.fallDamage(damage);
+        } else if (!isOnGround && !player.wasFalling()) {
+            player.startFalling(event.getPlayer().getPosition().y());
+        }
     }
 
     public EventNode<Event> getGeneralEventNode() {

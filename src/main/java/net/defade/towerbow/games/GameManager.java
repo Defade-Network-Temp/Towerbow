@@ -4,6 +4,8 @@ import net.defade.towerbow.players.TPlayer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerLoginEvent;
+import net.minestom.server.timer.Task;
+import net.minestom.server.timer.TaskSchedule;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -11,6 +13,8 @@ import java.util.Set;
 
 public class GameManager {
     private static final int MAX_INSTANCE_PER_SERVER = 15;
+    private static double CURRENT_TICK = 0;
+    private final Task tickClock;
     private final Set<GameInstance> gameInstances = new HashSet<>();
 
     public GameManager() {
@@ -24,6 +28,11 @@ public class GameManager {
             if (gameInstance != null) {
                 playerLoginEvent.setSpawningInstance(gameInstance);
             } else player.kick("Manager can't find a game");
+        });
+
+        tickClock = MinecraftServer.getSchedulerManager().submitTask(() -> {
+            CURRENT_TICK++;
+            return TaskSchedule.tick(1);
         });
     }
 
@@ -58,6 +67,10 @@ public class GameManager {
     }
 
     public void destroy(String reason) {
+        tickClock.cancel();
+    }
 
+    public static double currentTick() {
+        return CURRENT_TICK;
     }
 }

@@ -25,7 +25,7 @@ public class GameInstance extends InstanceContainer {
     private GameStatus gameStatus = GameStatus.CREATING;
     private final List<TPlayer> players = new ArrayList<>();
     private final Map<Point, Long> blocks = new HashMap<>();
-    private Task clock;
+    private final GameClocks clocks;
 
     public GameInstance(GameManager gameManager) {
         super(UUID.randomUUID(), DimensionType.OVERWORLD);
@@ -34,7 +34,7 @@ public class GameInstance extends InstanceContainer {
         timeline = new GameTimeline(this);
         this.displayer = new GameDisplayer(this);
         pvpHandler = new GamePvpHandler(this);
-        launchClock();
+        clocks = new GameClocks(this);
     }
 
     public boolean canAcceptPlayers() {
@@ -70,7 +70,7 @@ public class GameInstance extends InstanceContainer {
     public void destroy() {
         events.unregister();
         displayer.destroy();
-        clock.cancel();
+        clocks.destroy();
     }
 
     public void addBlock(Point point) {
@@ -85,20 +85,7 @@ public class GameInstance extends InstanceContainer {
         return gameStatus.isPlaying() && gameStatus != GameStatus.STARTING;
     }
 
-    private void launchClock() {
-        clock = MinecraftServer.getSchedulerManager().submitTask(() -> {
-            long now = System.currentTimeMillis();
-            for (Point point : new ArrayList<>(blocks.keySet())) {
-                if (now - blocks.get(point) > 3 * 60 * 1000) {
-                    super.setBlock(point, Block.AIR);
-                    blocks.remove(point);
-                    //TODO Do a block destroy animation
-                } else if (!getBlock(point).compare(Block.MOSSY_COBBLESTONE) && now - blocks.get(point) > (2 * 60 + 55) * 1000) {
-                    super.setBlock(point, Block.MOSSY_COBBLESTONE);
-                    Utils.sendSoundAround(this, point, SoundEvent.BLOCK_MOSS_PLACE, Sound.Source.BLOCK, 1.0F, 0.0F, null);
-                }
-            }
-            return TaskSchedule.tick(10);
-        });
+    public Map<Point, Long> getBlocks() {
+        return blocks;
     }
 }

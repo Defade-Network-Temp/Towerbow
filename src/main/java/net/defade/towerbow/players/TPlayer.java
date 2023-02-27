@@ -6,7 +6,6 @@ import net.defade.towerbow.utils.Team;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.damage.DamageType;
@@ -24,6 +23,7 @@ public class TPlayer extends Player {
     private static final Tag<Integer> TEAM_TAG = Tag.Integer("team");
     private static final Tag<Integer> KILLS_TAG = Tag.Integer("kills");
     private static final Tag<Double> FALLING_TAG = Tag.Double("playerBlockFalling");
+    private static final Tag<Double> DANGER_TIME_TAG = Tag.Double("low_time_tag");
 
 
     public TPlayer(@NotNull UUID uuid, @NotNull String username, @NotNull PlayerConnection playerConnection) {
@@ -60,7 +60,7 @@ public class TPlayer extends Player {
     }
 
     // private methods
-    private void damage(@Nullable TPlayer theBadGuy, DamageType type, int damage) {
+    public void damage(@Nullable TPlayer theBadGuy, DamageType type, int damage) {
         if (getHealth() - damage > 0) {
             damage(type, damage);
         } else {
@@ -134,6 +134,22 @@ public class TPlayer extends Player {
 
     public boolean hasActionMessage() {
         return hasTag(ACTION_BAR_TAG);
+    }
+
+    public double getTicksInDangerZone() {
+        return getTag(DANGER_TIME_TAG);
+    }
+
+    public void startInDangerZone(double millis) {
+        setTag(DANGER_TIME_TAG, millis);
+    }
+
+    public boolean wasInDangerZone() {
+        return hasTag(DANGER_TIME_TAG);
+    }
+
+    public void setNotInDanger() {
+        removeTag(DANGER_TIME_TAG);
     }
 
     // macros

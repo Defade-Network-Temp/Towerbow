@@ -1,6 +1,7 @@
 package net.defade.towerbow.games;
 
 import net.defade.towerbow.players.TPlayer;
+import net.defade.towerbow.utils.Conf;
 import net.defade.towerbow.utils.Team;
 import net.defade.towerbow.utils.Utils;
 import net.defade.towerbow.map.TowerbowMapGenerator;
@@ -8,6 +9,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventListener;
+import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.potion.Potion;
 import net.minestom.server.potion.PotionEffect;
@@ -119,9 +121,8 @@ public class GameTimeline {
         MinecraftServer.getSchedulerManager().scheduleTask(this::phaseOne, TaskSchedule.seconds(30), TaskSchedule.stop());
     }
 
-    private void phaseOne() {
+    private void phaseOne() { // Normal fight
         setStatus(GameStatus.PHASE_1);
-
 
     }
 
