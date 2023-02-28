@@ -74,7 +74,7 @@ public class GameInstance extends InstanceContainer {
     }
 
     public void addBlock(Point point) {
-        blocks.put(point, System.currentTimeMillis());
+        blocks.put(point, GameManager.currentTick());
     }
 
     public void removeBlock(Point point) {

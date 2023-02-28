@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class GameManager {
     private static final int MAX_INSTANCE_PER_SERVER = 15;
-    private static double CURRENT_TICK = 0;
+    private static long CURRENT_TICK = 0;
     private final Task tickClock;
     private final Set<GameInstance> gameInstances = new HashSet<>();
 
@@ -70,7 +70,7 @@ public class GameManager {
         tickClock.cancel();
     }
 
-    public static double currentTick() {
+    public static long currentTick() {
         return CURRENT_TICK;
     }
 }

@@ -23,7 +23,7 @@ public class TPlayer extends Player {
     private static final Tag<Integer> TEAM_TAG = Tag.Integer("team");
     private static final Tag<Integer> KILLS_TAG = Tag.Integer("kills");
     private static final Tag<Double> FALLING_TAG = Tag.Double("playerBlockFalling");
-    private static final Tag<Double> DANGER_TIME_TAG = Tag.Double("low_time_tag");
+    private static final Tag<Long> DANGER_TIME_TAG = Tag.Long("low_time_tag");
 
 
     public TPlayer(@NotNull UUID uuid, @NotNull String username, @NotNull PlayerConnection playerConnection) {
@@ -140,8 +140,8 @@ public class TPlayer extends Player {
         return getTag(DANGER_TIME_TAG);
     }
 
-    public void startInDangerZone(double millis) {
-        setTag(DANGER_TIME_TAG, millis);
+    public void startInDangerZone(long ticks) {
+        setTag(DANGER_TIME_TAG, ticks);
     }
 
     public boolean wasInDangerZone() {

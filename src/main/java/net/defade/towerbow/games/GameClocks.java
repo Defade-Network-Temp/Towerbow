@@ -24,14 +24,14 @@ public class GameClocks {
         this.instance = instance;
 
         blockClock = MinecraftServer.getSchedulerManager().submitTask(() -> {
-            long now = System.currentTimeMillis();
+            long now = GameManager.currentTick();
             Map<Point, Long> blocks = instance.getBlocks();
             for (Point point : new ArrayList<>(blocks.keySet())) {
-                if (now - blocks.get(point) > 3 * 60 * 1000) {
+                if (now - blocks.get(point) > Conf.TICKS_FOR_BLOCK_AIR) {
                     instance.setBlock(point, Block.AIR);
                     blocks.remove(point);
                     //TODO Do a block destroy animation
-                } else if (!instance.getBlock(point).compare(Block.MOSSY_COBBLESTONE) && now - blocks.get(point) > (2 * 60 + 55) * 1000) {
+                } else if (!instance.getBlock(point).compare(Block.MOSSY_COBBLESTONE) && now - blocks.get(point) > Conf.TICKS_FOR_BLOCK_MOSSY) {
                     instance.setBlock(point, Block.MOSSY_COBBLESTONE);
                     Utils.sendSoundAround(instance, point, SoundEvent.BLOCK_MOSS_PLACE, Sound.Source.BLOCK, 1.0F, 0.0F, null);
                 }
@@ -40,7 +40,7 @@ public class GameClocks {
         });
 
         dzPlayerClock = MinecraftServer.getSchedulerManager().submitTask(() -> {
-            if (instance.getGameStatus().isPlaying()) {
+            if (instance.getGameStatus().isPlaying() && instance.getGameStatus() != GameStatus.STARTING) {
                 for (TPlayer player : instance.getTPlayers()) {
                     if (player.getPosition().y() <= Conf.MIN_Y) {
                         if (player.wasInDangerZone()) {
