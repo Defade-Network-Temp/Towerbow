@@ -8,6 +8,8 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.network.packet.server.play.WorldBorderWarningDelayPacket;
+import net.minestom.server.network.packet.server.play.WorldBorderWarningReachPacket;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
@@ -19,6 +21,7 @@ public class GameClocks {
     private final GameInstance instance;
     private final Task blockClock;
     private final Task dzPlayerClock;
+    private final Task xpClock;
 
     public GameClocks(GameInstance instance) {
         this.instance = instance;
@@ -42,10 +45,13 @@ public class GameClocks {
         dzPlayerClock = MinecraftServer.getSchedulerManager().submitTask(() -> {
             if (instance.getGameStatus().isPlaying() && instance.getGameStatus() != GameStatus.STARTING) {
                 for (TPlayer player : instance.getTPlayers()) {
-                    if (player.getPosition().y() <= Conf.MIN_Y) {
+                    if (player.getPosition().y() <= Conf.DAMAGE_MIN_Y) {
                         if (player.wasInDangerZone()) {
-                            if (GameManager.currentTick() - player.getTicksInDangerZone() > Conf.TICK_SAFE_DZ)
+                            if (GameManager.currentTick() - player.getTicksInDangerZone() > Conf.TICK_SAFE_DZ) {
                                 player.damage(null, DamageType.VOID, 1);
+                            }
+                            player.sendPacket(new WorldBorderWarningDelayPacket(500));
+                            player.sendPacket(new WorldBorderWarningReachPacket(1));
                         } else {
                             player.startInDangerZone(GameManager.currentTick());
                         }
@@ -58,10 +64,28 @@ public class GameClocks {
             }
             return TaskSchedule.tick(20);
         });
+
+        xpClock = MinecraftServer.getSchedulerManager().submitTask(() -> {
+            if (instance.getGameStatus().isPlaying() && instance.getGameStatus() != GameStatus.STARTING) {
+                for (TPlayer player : instance.getTPlayers()) {
+                    if (player.getPosition().y() <= Conf.DAMAGE_MIN_Y) {
+                        if (player.wasInDangerZone()) {
+                            long delay = GameManager.currentTick() - player.getTicksInDangerZone();
+                            float ratio = (float) (1.0 - (double) delay / (double) Conf.TICK_SAFE_DZ);
+                            if (ratio < 0.0) ratio = 0.0F;
+                            if (ratio > 1.0) ratio = 1.0F;
+                            player.setExp(ratio);
+                        } else player.setExp(1.0f);
+                    } else player.setExp(1.0f);
+                }
+            }
+            return TaskSchedule.tick(3);
+        });
     }
 
     public void destroy() {
         blockClock.cancel();
         dzPlayerClock.cancel();
+        xpClock.cancel();
     }
 }

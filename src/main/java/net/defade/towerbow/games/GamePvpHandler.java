@@ -18,7 +18,6 @@ import java.util.Objects;
 /*
 Most of the code from this class is inspired by MinestomPVP.
 MinestomPVP repo : https://github.com/TogAr2/MinestomPvP
-Inspired from : https://github.com/TogAr2/MinestomPvP/blob/b5bff43012f0a826aaf25a89dcfde2b0aaac09a4/src/main/java/io/github/bloepiloepi/pvp/projectile/ProjectileListener.java
 */
 
 public class GamePvpHandler {

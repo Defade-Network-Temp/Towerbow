@@ -131,7 +131,7 @@ public class GameDisplayer {
 
         for (int i = 0; i < teamAlive; ++i) component = component.append(TEAM_LOGO.color(team.getTextColor()));
         for (int i = 0; i < teamDead; ++i) component = component.append(TEAM_LOGO.color(TextColor.color(75, 75, 75)));
-        component = component.append(Component.text("  " + player.getKills() + kills + " "));
+        component = component.append(Component.text(" | " + player.getKills() + kills + " | ").color(TextColor.color(86, 86, 86)));
         for (int i = 0; i < enemyAlive; ++i)
             component = component.append(ENEMY_LOGO.color(team.getOpposite().getTextColor()));
         for (int i = 0; i < enemyDead; ++i) component = component.append(ENEMY_LOGO.color(TextColor.color(75, 75, 75)));

@@ -51,7 +51,7 @@ public class GameEvents {
         });
 
         playerInstanceNode.addListener(PlayerBlockPlaceEvent.class, event -> {
-            if (instance.getGameStatus().isPlaying()) {
+            if (instance.getGameStatus().isPlaying() && event.getBlockPosition().y() < Conf.MAX_Y) {
                 instance.addBlock(event.getBlockPosition());
                 event.consumeBlock(false);
             } else {

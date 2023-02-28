@@ -136,7 +136,7 @@ public class TPlayer extends Player {
         return hasTag(ACTION_BAR_TAG);
     }
 
-    public double getTicksInDangerZone() {
+    public long getTicksInDangerZone() {
         return getTag(DANGER_TIME_TAG);
     }
 

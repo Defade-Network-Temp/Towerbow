@@ -6,8 +6,8 @@ import net.minestom.server.color.Color;
 
 public enum Team {
     NOT(NamedTextColor.WHITE, new Color(0, 0, 0), TextColor.color(0, 0, 0), 0),
-    BLUE(NamedTextColor.BLUE, new Color(0, 0, 100), TextColor.color(0, 0, 100), 1),
-    RED(NamedTextColor.RED, new Color(100, 0, 0), TextColor.color(100, 0, 0), -1);
+    BLUE(NamedTextColor.BLUE, new Color(0, 0, 100), TextColor.color(51, 84, 202), 1),
+    RED(NamedTextColor.RED, new Color(100, 0, 0), TextColor.color(245, 76, 74), -1);
 
     private final NamedTextColor namedTextColor;
     private final Color color;
